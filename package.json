@@ -1,0 +1,15 @@
+{
+  "name": "clearmeasure",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "mocha test_boilerplate.js"
+  },
+  "author": "Brian Boyko",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "should": "^8.2.2"
+  }
+}

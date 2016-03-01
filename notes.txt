@@ -1,0 +1,32 @@
+Output:
+
+1 - 100 inclusive:
+
+If the number's divisible 
+by 3, print "Fizz!"
+
+If the number's divisible by 
+5, print "Buzz", 
+
+If the number's divisible by 
+15, print "Fizzbuzz" 
+
+-----------
+
+Homework:
+Write Tests that safe to use at the upper bounds (largest numbers, negative numbers, edge cases)
+
+Complete Error Handling & Edge Cases; 
+
+Optimize the generator (so that if you're iterating over it, it will still be responsive.); 
+  -- If someone external to the script is iterating over the returned enumeration,
+  -- They may not choose to iterate over the entire collection. 
+    -- If they say "Fizz Buzz 1-1000000" and they say "bomb out at 500", don't generate
+	the numbers for 1000000"
+
+  -- due date: 3 days. Not in a huge hurry. 
+
+Call mainFizzBuzz from an external script. 
+(A secondary script that calls it, so it's treated like a true library
+, and controls where the output goes.)...
+	.. if I was using node to use a package, I'd have to call the fizzbuzzer.  
