@@ -1,19 +1,28 @@
-// JavaScript source code
-var commandLineArguments = [];
+// index.js
+var prompt = require('prompt');
+import { getCommand } from './inputProcessing'
 
-process.argv.forEach(function (val, index, array) {
-    commandLineArguments.push(val)
-});
+var initialInput = function () {
+    var commandLineArguments = [];
+    process.argv.forEach(function (val, index, array) {
+        commandLineArguments.push(val)
+    });
+    commandLineArguments = commandLineArguments.slice(2); 
+}
 
-commandLineArguments = commandLineArguments.slice(2); 
 
-var fizzbuzzer = function (number) {
-    if (number % 15 === 0){
-        return ("FizzBuzz!")
-    } else if (number % 5 === 0) {
-        return ("Buzz!")
-    } else if (number % 3 === 0) {
-        return ("Fizz!");
+
+
+
+
+var fizzbuzzer = function (number, fizzer = 3, buzzer = 5, fizzOutput = "Fizz", buzzOutput = "Buzz") {
+    if ((number % fizzer === 0) && (number % buzzer === 0)){
+        let output = "" + fizzOutput + buzzOutput + '!'
+        return (output)
+    } else if (number % fizzer === 0) {
+        return (fizzOutput + "!")
+    } else if (number % buzzer === 0) {
+        return (buzzOutput + "!");
     } else {
         return number;
     }
