@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "mocha test_boilerplate.js"
+    "test": "mocha test.js"
   },
   "author": "Brian Boyko",
   "license": "ISC",
