@@ -30,3 +30,5 @@ Call mainFizzBuzz from an external script.
 (A secondary script that calls it, so it's treated like a true library
 , and controls where the output goes.)...
 	.. if I was using node to use a package, I'd have to call the fizzbuzzer.  
+
+  Okay, 999999999999999 is the largest number I can reliably test in Javascript. That's 9 (mod 15), so we can start the fizzbuz counter at "fizz, buzz, num, fizz, num, num, fizzbuzz"
