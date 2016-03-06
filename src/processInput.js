@@ -3,6 +3,7 @@ import { HELP_TEXT, VERSION } from './constants'
 
 var getArgumentsFromCommandLine = function(){
   // "clArgs": "Command Line Arguments"
+    var clArgs = []; 
     process.argv.forEach(function (val, index, array) {
       clArgs.push(val);
   });
@@ -77,7 +78,7 @@ var parseFlags = function(argObj, args){
 }
 
 var processInput = function(){
-  const helpFlags = ['-h', 'h', 'help', '-help', '--help', '--v'];
+  const helpFlags = ['-h', 'h', 'help', '-help', '--help', '--h'];
   const versionFlags = ['-v', 'v', '-version', '--version', '--v'];
   var args = getArgumentsFromCommandLine();
   args = showAndRemoveSpecialFlags(args, versionFlags, VERSION);
@@ -106,6 +107,5 @@ export {
   showAndRemoveSpecialFlags, 
   prepNumbers, 
   parseFlags, 
-  parseInput, 
   processInput
 } 

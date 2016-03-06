@@ -28,6 +28,8 @@ gulp.task('compileES2015', () => {
 
 gulp.task('test', ['compileES2015'], () =>{
   return gulp.src('spec/test.js')
-    .pipe(mocha({reporter: 'nyan', js:'babel-core/register'}))
+    .pipe(mocha({reporter: 'spec', js:'babel-core/register'}))
 
 })
+
+gulp.task('default', ['compileES2015'])

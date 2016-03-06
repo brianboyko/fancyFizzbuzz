@@ -6,8 +6,18 @@ import {
   showAndRemoveSpecialFlags, 
   prepNumbers, 
   parseFlags, 
-  parseInput, 
   processInput
 } from './processInput'
 
-export { fizzbuzzer, createFizzBuzz }
+export { fizzbuzzer, 
+  createFizzBuzz, 
+  getArgumentsFromCommandLine, 
+  showAndRemoveSpecialFlags, 
+  prepNumbers, 
+  parseFlags, 
+  processInput,
+  HELP_TEXT,
+  VERSION
+}
+
+console.log(process.argv); 
