@@ -32,9 +32,8 @@ var prepNumbers = function(strNum){
       return toNumber(strNum); 
     } else {
       while(strNum.length > 0){
-        bigNumArray.push(strNum.slice(0, 15)){
+        bigNumArray.push(strNum.slice(0, 15))
         strNum = strNum.slice(15); 
-        }
       }
     }
   } else if (typeof(strNum) == 'number' && strNum != NaN){
@@ -77,7 +76,7 @@ var parseFlags = function(argObj, args){
   return argObj; 
 }
 
-export default function processInput(){
+var processInput = function(){
   const helpFlags = ['-h', 'h', 'help', '-help', '--help', '--v'];
   const versionFlags = ['-v', 'v', '-version', '--version', '--v'];
   var args = getArgumentsFromCommandLine();
@@ -102,8 +101,11 @@ export default function processInput(){
 } 
 
 
- 
-
-
-
-
+export { 
+  getArgumentsFromCommandLine, 
+  showAndRemoveSpecialFlags, 
+  prepNumbers, 
+  parseFlags, 
+  parseInput, 
+  processInput
+} 
