@@ -146,7 +146,22 @@ var createFizzBuzz = function createFizzBuzz(start, end) {
   return output;
 };
 
-console.log(process.argv);
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+var util = require('util');
+console.log("To abort, press 'q' then 'enter'");
+
+process.stdin.on('data', function (text) {
+  console.log('received data:', util.inspect(text));
+  if (text === 'q\n') {
+    done();
+  }
+});
+
+function done() {
+  console.log('Now that process.stdin is paused, there is nothing more to do.');
+  process.exit();
+}
 
 exports.fizzbuzzer = fizzbuzzer;
 exports.createFizzBuzz = createFizzBuzz;

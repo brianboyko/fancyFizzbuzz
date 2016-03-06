@@ -1,4 +1,5 @@
 // considered using optimist but it was a bit overkill. 
+var prompt = require('prompt'); 
 import { HELP_TEXT, VERSION } from './constants'
 
 var getArgumentsFromCommandLine = function(){
@@ -102,10 +103,54 @@ var processInput = function(){
 } 
 
 
+
+
+
+var args = getArgumentsFromCommandLine();
+
+// if no args, prompt for values
+if(args.length < 2){
+  var promptedArgs = {}; 
+
+        const shouldBeObj = {
+        first: 20,
+        last: 40,
+        firstModulus: 6,
+        secondModulus: 10,
+        input: 'dummyInput.csv',
+        output: 'dummyOutput.csv',
+        fizzTerm: 'Fudder',
+        buzzTerm: 'Dudder'
+      }
+
+var promptForArgs = function(){
+  var promptedArgs = {}; 
+  prompt.start();
+  console.log("Please enter the first value:\n")
+  prompt.get(['start'], function(err, result){
+    if (typeof(result.start) != 'number'){
+      console.log("I'm sorry. That's not a number I can use. Aborting program.")
+      process.exit(); 
+    } else {
+      promptedArgs.start = result.start; 
+    }
+  })
+  console.log("Please enter the second value:\n")
+  prompt.get(['end'], function(err, result){
+    if (typeof(result.start) != 'number'){
+      console.log("I'm sorry. That's not a number I can use. Aborting program.")
+      process.exit(); 
+    } else {
+      promptedArgs.end = result.end; 
+    }
+  })
+}
+
 export { 
   getArgumentsFromCommandLine, 
   showAndRemoveSpecialFlags, 
   prepNumbers, 
   parseFlags, 
-  processInput
+  processInput,
+  promptForArgs
 } 
