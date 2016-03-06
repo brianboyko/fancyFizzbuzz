@@ -7,7 +7,8 @@ import {
     HELP_TEXT, 
     VERSION, 
     showAndRemoveSpecialFlags,
-    getArgumentsFromCommandLine
+    getArgumentsFromCommandLine,
+    processInput
 } from '../build/main.js'
 
 describe('Fizzbuzzer should return the correct output', function () {
@@ -152,9 +153,25 @@ describe('should correctly parse command line arguments', function(){
     })
 
     it('should lop off the first two things from the command line', function(){
-      process.argv = ['/usr/local/bin/node', './build/main.js', 1, 15, 3, 5, 'Fizz', 'Buzz'];
-      assert.equal(JSON.stringify(getArgumentsFromCommandLine()), JSON.stringify([1, 15, 3, 5, 'Fizz', 'Buzz']))
+      process.argv = ['/usr/local/bin/node', './build/main.js', 1, 15, '-m', 3, 5, '-t', 'Fizz', 'Buzz'];
+      assert.equal(JSON.stringify(getArgumentsFromCommandLine()), JSON.stringify([1, 15, '-m', 3, 5, '-t', 'Fizz', 'Buzz']))
     })
+
+    it('should take the correct inputs from the command line and send them to the object', function(){
+      process.argv = ['/usr/local/bin/node', './build/main.js', '-h', '-v', 20, 40, '-m', 6, 10, '-t', 'Fudder', 'Dudder', '-i', 'dummyInput.csv', '-o', 'dummyOutput.csv'];
+      const shouldBeObj = {
+        first: 20,
+        last: 40,
+        firstModulus: 6,
+        secondModulus: 10,
+        input: 'dummyInput.csv',
+        output: 'dummyOutput.csv',
+        fizzTerm: 'Fudder',
+        buzzTerm: 'Dudder'
+      }
+      assert.equal(JSON.stringify(processInput()), JSON.stringify(shouldBeObj))
+    })
+
       // here we restore process.argv to it's original value. 
     process.argv = processArgvTempHolder;
 })

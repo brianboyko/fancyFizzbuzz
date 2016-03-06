@@ -55,7 +55,7 @@ var parseFlags = function(argObj, args){
           argObj.firstModulus = args[i+1];
         }
         if(typeof(args[i+2]) == 'number'){
-          argObj.secondModulus == args[i+2];
+          argObj.secondModulus = args[i+2];
         }
         break;
       case '-i':
@@ -69,7 +69,7 @@ var parseFlags = function(argObj, args){
       case '-t':
       case '-terms':
         argObj.fizzTerm = args[i+1];
-        argObj.buzzterm = args[i+2];
+        argObj.buzzTerm = args[i+2];
       default:
       break;
     }
@@ -86,10 +86,10 @@ var processInput = function(){
     // at this point, args should only contain the flags we're interested in.
 
   var argumentObject = {
-    first: prepNumbers(args[0]), // required
-    last: prepNumbers(args[1]), // required
-    firstModulus: 3, // default. 
-    secondModulus: 5, // default. 
+    first: args[0], // required
+    last: args[1], // required
+    firstModulus: 3, // default, may be overwritten in parseFlags
+    secondModulus: 5, // default, may be overwritten
     input: null,
     output: null,
     fizzTerm: "Fizz", // default.
