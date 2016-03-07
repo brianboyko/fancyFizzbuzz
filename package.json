@@ -23,5 +23,8 @@
     "mocha": "^2.4.5",
     "rollup-plugin-includepaths": "^0.1.1",
     "should": "^8.2.2"
+  },
+  "dependencies": {
+    "fs": "0.0.2"
   }
 }

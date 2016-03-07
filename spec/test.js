@@ -59,12 +59,37 @@ describe('Fizzbuzzer should return the correct output', function () {
 })
 
 
-describe('MainFizzBuzz should return the correct output', function () {
+
+describe('createFizzBuzz should return the correct output', function () {
+    const tst_1_15 = [ 1, 2, 'Fizz!', 4, 'Buzz!', 'Fizz!', 7, 8, 'Fizz!', 'Buzz!', 11, 'Fizz!', 13, 14, 'FizzBuzz!' ];
+    const tst_1_28_4_7 = [ 1, 2, 3, 'Foo!', 5, 6, 'Bar!', 'Foo!', 9, 10, 11, 'Foo!', 13, 'Bar!', 15, 'Foo!', 17, 18, 19, 'Foo!', 'Bar!', 22, 23, 'Foo!', 25, 26, 27, 'FooBar!' ]; 
+    const tst_minus15_15 = ["FizzBuzz!",-14,-13,"Fizz!",-11,"Buzz!","Fizz!",-8,-7,"Fizz!","Buzz!",-4,"Fizz!",-2,-1,0,1,2,"Fizz!",4,"Buzz!","Fizz!",7,8,"Fizz!","Buzz!",11,"Fizz!",13,14,"FizzBuzz!"]
 
     it('and should do a standard fizzbuzz with no other arguments', function () {
-        const testArray_1_15 = [ 1, 2, 'Fizz!', 4, 'Buzz!', 'Fizz!', 7, 8, 'Fizz!', 'Buzz!', 11, 'Fizz!', 13, 14, 'FizzBuzz!' ];
         // two identical arrays will not evaluate to be "equal" to each other. Stringification is a good solution to this problem. 
-        assert.equal(JSON.stringify(createFizzBuzz(1, 15)), JSON.stringify(testArray_1_15));
+        assert.equal(JSON.stringify(createFizzBuzz(1, 15)), JSON.stringify(tst_1_15));
     });
 
+
+    it('and should take custom parameters', function () {
+        // two identical arrays will not evaluate to be "equal" to each other. Stringification is a good solution to this problem. 
+        assert.equal(JSON.stringify(createFizzBuzz(1, 28, 4, 7, 'Foo', 'Bar')), JSON.stringify(tst_1_28_4_7));
+    });
+
+
+    it('and it should be able to count backwards', function () {
+        // two identical arrays will not evaluate to be "equal" to each other. Stringification is a good solution to this problem. 
+        assert.equal(JSON.stringify(createFizzBuzz(15, 1)), JSON.stringify(tst_1_15.reverse()));
+    });
+
+    it('and it should be able to count backwards with custom parameters', function () {
+        const tst_15_1 = ["FizzBuzz!" ,14 ,13, "Fizz!", 11, "Buzz!", "Fizz!", 8, 7, "Fizz!", "Buzz!", 4, "Fizz!", 2, 1];
+        // two identical arrays will not evaluate to be "equal" to each other. Stringification is a good solution to this problem. 
+        assert.equal(JSON.stringify(createFizzBuzz(28, 1, 4, 7, 'Foo', 'Bar')), JSON.stringify(tst_1_28_4_7.reverse()));
+    });
+
+    it('and should handle positive numbers, negative numbers, and 0', function () {
+        // two identical arrays will not evaluate to be "equal" to each other. Stringification is a good solution to this problem. 
+        assert.equal(JSON.stringify(createFizzBuzz(-15, 15)), JSON.stringify(tst_minus15_15));
+    });
 })

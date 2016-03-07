@@ -3,6 +3,7 @@ import { HELP_TEXT, VERSION } from './constants'
 
 var getArgumentsFromCommandLine = function(){
   // "clArgs": "Command Line Arguments"
+  var clArgs = []; 
     process.argv.forEach(function (val, index, array) {
       clArgs.push(val);
   });
@@ -24,37 +25,17 @@ var showAndRemoveSpecialFlags = function(args, flags, text){
   return args;
 } 
 
-
-var prepNumbers = function(strNum){
-  var bigNumArray = []; 
-  if (typeof(strNum) == 'string'){
-    if (strNum.length < 15){
-      return toNumber(strNum); 
-    } else {
-      while(strNum.length > 0){
-        bigNumArray.push(strNum.slice(0, 15))
-        strNum = strNum.slice(15); 
-      }
-    }
-  } else if (typeof(strNum) == 'number' && strNum != NaN){
-    return strNum;
-  } else {
-    console.error("Argument is not a number nor a string which can be parsed to a number")
-    return null; 
-  }
-}
-
 // using the switch fall-through here. 
 var parseFlags = function(argObj, args){
   for (var i = 0; i < args.length; i++){
     switch(args[i]){
       case '-m':
       case '-moduli':
-        if(typeof(args[i+1]) == 'number'){
-          argObj.firstModulus = args[i+1];
+        if(!isNaN(Number(args[i+1]))){
+          argObj.firstModulus = Number(args[i+1]);
         }
-        if(typeof(args[i+2]) == 'number'){
-          argObj.secondModulus == args[i+2];
+        if(!isNaN(Number(args[i+2]))){
+          argObj.secondModulus = Number(args[i+2]);
         }
         break;
       case '-i':
@@ -68,7 +49,7 @@ var parseFlags = function(argObj, args){
       case '-t':
       case '-terms':
         argObj.fizzTerm = args[i+1];
-        argObj.buzzterm = args[i+2];
+        argObj.buzzTerm = args[i+2];
       default:
       break;
     }
@@ -85,8 +66,8 @@ var processInput = function(){
     // at this point, args should only contain the flags we're interested in.
 
   var argumentObject = {
-    first: prepNumbers(args[0]), // required
-    last: prepNumbers(args[1]), // required
+    first: Number(args[0]), // required
+    last: Number(args[1]), // required
     firstModulus: 3, // default. 
     secondModulus: 5, // default. 
     input: null,
@@ -104,7 +85,6 @@ var processInput = function(){
 export { 
   getArgumentsFromCommandLine, 
   showAndRemoveSpecialFlags, 
-  prepNumbers, 
   parseFlags, 
   parseInput, 
   processInput
