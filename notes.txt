@@ -1,34 +1,72 @@
-Output:
+Here are my notes for the project:
 
-1 - 100 inclusive:
+While there were a number of areas where I was able to make significant progress,
+I was not able to complete all the features that you asked for. 
 
-If the number's divisible 
-by 3, print "Fizz!"
+Rather than giving you fully featured code that breaks, I decided to 
+scope down, clean up the features that I felt were solid, and give that to you. 
 
-If the number's divisible by 
-5, print "Buzz", 
+------------------
+These are completed features: 
 
-If the number's divisible by 
-15, print "Fizzbuzz" 
+* FizzBuzz works with any number from -999,999,999,999,999 to 999,999,999,999,999. 
 
------------
+* From the command line, FizzBuzz can read two numbers stored in a file and use them as inputs. 
 
-Homework:
-Write Tests that safe to use at the upper bounds (largest numbers, negative numbers, edge cases)
+* From the command line FizzBuzz can output to a file.
 
-Complete Error Handling & Edge Cases; 
+* From the command line, if no output file is specified, it defaults to
+  logging to the console. 
 
-Optimize the generator (so that if you're iterating over it, it will still be responsive.); 
-  -- If someone external to the script is iterating over the returned enumeration,
-  -- They may not choose to iterate over the entire collection. 
-    -- If they say "Fizz Buzz 1-1000000" and they say "bomb out at 500", don't generate
-	the numbers for 1000000"
+* FizzBuzz outputs help instructions with the -h flag. 
 
-  -- due date: 3 days. Not in a huge hurry. 
+* FizzBuzz outputs version numbers with the -v flag. 
 
-Call mainFizzBuzz from an external script. 
-(A secondary script that calls it, so it's treated like a true library
-, and controls where the output goes.)...
-	.. if I was using node to use a package, I'd have to call the fizzbuzzer.  
+* FizzBuzz can accept alternate moduli (other than 3 and 5).
 
-  Okay, 999999999999999 is the largest number I can reliably test in Javascript. That's 9 (mod 15), so we can start the fizzbuz counter at "fizz, buzz, num, fizz, num, num, fizzbuzz"
+* FizzBuzz can accept alternate strings (other than "Fizz", and "Buzz").
+
+* FizzBuzz can be imported to another project as a library. 
+
+------------------
+These are incomplete features: 
+
+* FizzBuzz cannot work with any number with more than 15 significant digits.  
+
+  Unlike other programming languages, Javascript has no "integer" so all numbers
+  are strictly floating point math of 64 bits. 53 bits are reserved for the number, 
+  10 for exponentiation, and 1 for positive/negative value. 
+
+  For that reason, integers are only considered accurate up to 15 significant digits.  
+
+How I would approach this with more time:
+
+  The most promising library which already solves this problem out-of-the-gate was  
+  https://github.com/peterolson/BigInteger.js 
+
+* FizzBuzz cannot be halted via user input from the console. 
+
+  While Javascript has a number of event listeners for dealing with browser input,
+  dealing with getting input from the command line is almost an afterthought. 
+
+  During my research and experimentation, I was able to find a way to halt the program
+  using process.stdin from this Stack Overflow:
+  http://stackoverflow.com/questions/5006821/nodejs-how-to-read-keystrokes-from-stdin
+
+  However, once process.stdin is invoked, it requires manually calling process.exit inside
+  the program. And that had limited success. I would often find that trying to halt the program 
+  through keypresses resulted in a hung terminal. 
+
+  Despite spending several hours working with this method, I could not get it to perform
+  to satisfaction.
+
+  Note, however, that I did start building the program with this functionality in mind; 
+  the program processes numbers in chunks of no more than 10,000 at a time. 
+
+How I would approach this given more time: 
+
+  Programming is knowing when to google, when to ask for help, and when to take a walk 
+  around the block. I will admit that this problem has me a bit stumped, but I'm 
+  confident given more time I may come up with a new angle on this. 
+
+-----------------------

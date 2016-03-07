@@ -10,6 +10,8 @@ var getArgumentsFromCommandLine = function(){
   return clArgs.slice(2); 
 }
 
+
+
 var showAndRemoveSpecialFlags = function(args, flags, text){
   var showed = false; 
   for (var i = 0; i < flags.length; i++){
@@ -82,10 +84,4 @@ var processInput = function(){
 } 
 
 
-export { 
-  getArgumentsFromCommandLine, 
-  showAndRemoveSpecialFlags, 
-  parseFlags, 
-  parseInput, 
-  processInput
-} 
+export { processInput } 

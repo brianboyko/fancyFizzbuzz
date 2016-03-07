@@ -1,13 +1,21 @@
-'Welcome to FancyFizzBuzz!, version VERSION
-Usage: node index.js <first> <last> (-h, -v) [-i <filename>] 
-       [-o <filename>] [-m <first modulus> <second modulus>] 
-       [-t “<first term>” “<second term>”]
+Welcome to FancyFizzBuzz!, version 0.0.1
 
-where <first> and <last> are either intergers or a number
-written as a string (with quotes around it) 
+Installation: 
+==============================
+| $ npm run build
+==============================
 
-NOTER: For numbers greater than 999,999,999,999,999, or less than 
--999,999,999,999,999, you must place the number inside quotes, otherwise the program may not process the number correctly. 
+Command Line Usage (from root directory of this project): 
+==============================
+| $ node build/main.js <first> <last> (-h, -v) [-i <filename>] 
+|        [-o <filename>] [-m <first modulus> <second modulus>] 
+|        [-t “<first term>” “<second term>”]
+==============================
+
+where <first> and <last> are integers. 
+
+* The program can handle any intergers from -999,999,999,999,999 to 
+999,999,999,999,999. 
 
 Other parameters: (case insensitive)
  node index.js -h (or -help)
@@ -16,6 +24,9 @@ Other parameters: (case insensitive)
    => Get version info
  node index.js -i (or -input) [filename]
    => Input min and max from text file. 
+      This must be in the form "#, #"
+      (This is a fairly useless feature but can be expanded
+      to include JSON parameters for fine tuning on later features)
  node index.js -o (or -output) [filename]
    => Output to file, instead of console
  node index.js -m (or -moduli) [fizz modulus] [buzz modulus]
@@ -31,5 +42,29 @@ Other parameters: (case insensitive)
        $ node index.js 1 7 -t “Foo” “Bar” 
        => “1, 2, Foo!, 4, Bar!, 7”
  
- Other features: 
-  - Hit q at any time to terminate a running fizzbuzz process.'
+Node Package Usage
+
+ES6: 
+  import {createFizzBuzz as fizzBuzz} from './lib/index'
+ES5: 
+  var fizzBuzz = require('./lib/index').createFizzBuzz
+
+fizzBuzz(start, end, [firstMod, secondMod, firstModOutput, secondModOutput])
+  returns array
+
+    start: number to start the sequence (inclusive);
+      Integer, Required
+    end: Integer, number to end the sequence (inclusive);
+      Integer, Required
+    firstMod: First modulus number
+      Integer
+      Default 3
+    secondMod: Second modulus number
+      Integer
+      Default 5
+    firstModOutput: First replacement string.
+      String
+      Default "Fizz"
+    secondModOutput: Second replacement string.
+      String
+      Default "Buzz"

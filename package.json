@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "mocha test.js"
+    "build": "npm install && gulp build"
   },
   "author": "Brian Boyko",
   "license": "ISC",

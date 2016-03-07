@@ -3,9 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var VERSION = 'v1.0.0';
+var VERSION = 'v0.0.1';
 
-var HELP_TEXT = 'Help Text Goes Here';
+var HELP_TEXT = 'Welcome to FancyFizzBuzz!, version ' + VERSION + '\r\n\r\nInstallation: \r\n==============================\r\n| $ npm run build\r\n==============================\r\n\r\nCommand Line Usage (from root directory of this project): \r\n==============================\r\n| $ node build/main.js <first> <last> (-h, -v) [-i <filename>] \r\n|        [-o <filename>] [-m <first modulus> <second modulus>] \r\n|        [-t “<first term>” “<second term>”]\r\n==============================\r\n\r\nwhere <first> and <last> are integers. \r\n\r\n* The program can handle any integers from -999,999,999,999,999 to \r\n999,999,999,999,999. \r\n\r\nOther parameters: (case insensitive)\r\n node index.js -h (or -help)\r\n   => Read this help document\r\n node index.js -v (or -version)\r\n   => Get version info\r\n node index.js -i (or -input) [filename]\r\n   => Input min and max from text file. \r\n      This must be in the form "#, #"\r\n      (This is a fairly useless feature but can be expanded\r\n      to include JSON parameters for fine tuning on later features)\r\n node index.js -o (or -output) [filename]\r\n   => Output to file, instead of console\r\n node index.js -m (or -moduli) [fizz modulus] [buzz modulus]\r\n   => Define the string replacement conditions;\r\n      Defaults are 3 and 5, respectively.\r\n      Example: \r\n       $ node index.js 1 10 -m 2 5 \r\n       => “1, Fizz!, 3, Fizz!, Buzz!, \r\n           Fizz!, 7, Fizz!, 9, FizzBuzz!”\r\n node index.js -t (or -terms) [fizz term] [buzz term]\r\n   => Redefine the strings to replace integers with\r\n      Example: \r\n       $ node index.js 1 7 -t “Foo” “Bar” \r\n       => “1, 2, Foo!, 4, Bar!, 7”';
 
 var getArgumentsFromCommandLine = function getArgumentsFromCommandLine() {
   // "clArgs": "Command Line Arguments"
@@ -128,31 +128,30 @@ var createFizzBuzz = function createFizzBuzz(start, end) {
   return output;
 };
 
-var fs$1 = require('fs');
+var fs = require('fs');
 
-// step 2: Check to see if we will get the parameters from an input file.
+//Check to see if we will get the parameters from an input file.
+// instead of returning a value, we will be using callbacks to
+// send the data we need to the next step in the algorithm,
+// whether that's something we need to wait on a file read for
+// or something we can do immediately.
 function parseInputFile(inputObj) {
   if (inputObj.input !== null) {
-    // step 2a: Yes we will!
     var fileName = inputObj.input;
-    fs$1.exists(fileName, function (exists) {
+    fs.exists(fileName, function (exists) {
       if (exists) {
-        fs$1.stat(fileName, function (error, stats) {
-          fs$1.open(fileName, "r", function (error, fd) {
+        fs.stat(fileName, function (error, stats) {
+          fs.open(fileName, "r", function (error, fd) {
             var buffer = new Buffer(stats.size);
-
-            fs$1.read(fd, buffer, 0, buffer.length, null, function (error, bytesRead, buffer) {
+            fs.read(fd, buffer, 0, buffer.length, null, function (error, bytesRead, buffer) {
               var data = buffer.toString("utf8", 0, buffer.length);
               // sneaky way of turning strings into data we can use.
               data = JSON.parse('[' + data + ']');
               inputObj.first = data[0];
               inputObj.last = data[1];
-              // sadly, until async/await is full implimented in ES7,
-              // we are stuck in this callback.  Neverfear, though.
-
-              console.log("inputObj: \n", inputObj);
-
-              fs$1.close(fd);
+              // sadly, until async/await is fully implimented in ES7,
+              // we are stuck in this callback. 
+              fs.close(fd);
               delete inputObj.input; // we can delete this because we no longer need it. We have our numbers.
               lockNums(inputObj); // call lockNums and pass in the new numbers we got from the file;
             });
@@ -161,7 +160,6 @@ function parseInputFile(inputObj) {
       }
     });
   } else {
-      // step 2b: No we won't!
       delete inputObj.input; // we can delete this because it was null to begin with. 
       lockNums(inputObj); // call lockNums and pass in the numbers
     }
@@ -173,36 +171,34 @@ function parseInputFile(inputObj) {
 function lockNums(inputObj) {
   // like the name suggests, the numbers we're using will be locked by this point.
   if (isNaN(inputObj.first) || isNaN(inputObj.last)) {
-    console.log("Oops, Cannot find parameters"); // Oddly enough, some tests will produce this.
+    console.log("WARN: One or both parameters were NaN:");
+    console.log("inputObj in lockNums(inputObj):", inputObj);
+    // Oddly enough, some tests will produce this.
+    // this actually is a serious concern of mine but simply ran out of time.
     return;
   }
 
-  console.log("inputObj in lockNums", inputObj);
   if (inputObj.output !== null) {
-    var stream = fs$1.createWriteStream(inputObj.output);
+    var stream = fs.createWriteStream(inputObj.output);
     stream.once('open', function (fd) {
-      console.log("this", this);
       var streamOut = stream.write.bind(this); // bind(this) is needed, otherwise this._writableState will be undefined
-      writeOutAll(streamOut, inputObj); // dependency injection FTW!
+      writeOutAll(streamOut, inputObj); // dependency injection -- this way we don't have to write two different functions for outputting to file and outputing to the console. 
       stream.end();
     });
   } else {
-    writeOutAll(console.log, inputObj);
+    writeOutAll(console.log, inputObj); // if we're not writing to a stream, we're writing to a console.
   }
 }
 
 function writeOutAll(outputFunc, inputObj) {
   // output.func will either be a a file stream OR console.log, if no file was specified.
-  console.log("outputFunc", outputFunc);
-  var chunkSize = 10000;
-  var complete = false;
+
+  var chunkSize = 10000; // arbitrary.
+  var complete = false; // ends our while loop if true.
   var checkpoint = inputObj.first;
   var nextCheckpoint;
-  console.log(checkpoint);
   while (!complete) {
-    console.log("checkpoint", checkpoint);
     if (Math.abs(checkpoint - inputObj.last) < chunkSize) {
-      console.log("Math.abs(checkpoint - inputObj.last)", Math.abs(checkpoint - inputObj.last));
       outputFunc( // console or file
       JSON.stringify( // stream needs to be a string.
       createFizzBuzz(checkpoint, inputObj.last, inputObj.firstModulus, inputObj.secondModulus, inputObj.fizzTerm, inputObj.buzzTerm)).slice(1, -1) // we want to take off those pesky array "[" and "]" characters, so that our number line is contiguous
@@ -226,15 +222,7 @@ function writeOutAll(outputFunc, inputObj) {
   }
 }
 
-// tests require access to these functions.
-
-var fs = require('fs');
-
-// step 1: Get initial command line parameters.
 var inputObj = processInput();
-console.log("inputObj: \n", inputObj);
-
-// Step 2 is in "fileOperations.js"
 parseInputFile(inputObj);
 
 exports.fizzbuzzer = fizzbuzzer;
