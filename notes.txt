@@ -31,7 +31,7 @@ These are completed features:
 ------------------
 These are incomplete features: 
 
-* FizzBuzz cannot work with any number with more than 15 significant digits.  
+* PRIORITY: MAJOR FizzBuzz cannot work with any number with more than 15 significant digits.  
 
   Unlike other programming languages, Javascript has no "integer" so all numbers
   are strictly floating point math of 64 bits. 53 bits are reserved for the number, 
@@ -41,10 +41,11 @@ These are incomplete features:
 
 How I would approach this with more time:
 
-  The most promising library which already solves this problem out-of-the-gate was  
+  The most promising library I found - but did not have time to incorporate, was   
   https://github.com/peterolson/BigInteger.js 
 
-* FizzBuzz cannot be halted via user input from the console. 
+
+* PRIORITY: MAJOR: FizzBuzz cannot be halted via user input from the console. 
 
   While Javascript has a number of event listeners for dealing with browser input,
   dealing with getting input from the command line is almost an afterthought. 
@@ -70,3 +71,9 @@ How I would approach this given more time:
   confident given more time I may come up with a new angle on this. 
 
 -----------------------
+
+Known Bugs:
+* PRIORITY: MINOR(?)/Cosmetic:
+  Executing FizzBuzz with the -h or -v flag and no other flags will
+  show a warning message that inputs are NaN. (They technically are,
+  but this should not be the behavior)
