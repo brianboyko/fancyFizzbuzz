@@ -31,25 +31,6 @@ var showAndRemoveSpecialFlags = function showAndRemoveSpecialFlags(args, flags, 
   return args;
 };
 
-var prepNumbers = function prepNumbers(strNum) {
-  var bigNumArray = [];
-  if (typeof strNum == 'string') {
-    if (strNum.length < 15) {
-      return toNumber(strNum);
-    } else {
-      while (strNum.length > 0) {
-        bigNumArray.push(strNum.slice(0, 15));
-        strNum = strNum.slice(15);
-      }
-    }
-  } else if (typeof strNum == 'number' && strNum != NaN) {
-    return strNum;
-  } else {
-    console.error("Argument is not a number nor a string which can be parsed to a number");
-    return null;
-  }
-};
-
 // using the switch fall-through here.
 var parseFlags = function parseFlags(argObj, args) {
   for (var i = 0; i < args.length; i++) {
@@ -86,6 +67,9 @@ var processInput = function processInput() {
   var helpFlags = ['-h', 'h', 'help', '-help', '--help', '--h'];
   var versionFlags = ['-v', 'v', '-version', '--version', '--v'];
   var args = getArgumentsFromCommandLine();
+  if (args.length < 2) {
+    console.log("Warning: Not enough arguments provided from command line");
+  }
   args = showAndRemoveSpecialFlags(args, versionFlags, VERSION);
   args = showAndRemoveSpecialFlags(args, helpFlags, HELP_TEXT);
   // at this point, args should only contain the flags we're interested in.
@@ -103,10 +87,14 @@ var processInput = function processInput() {
   // default.
   // modify the argument object with any special cases that the user has entered:
   argumentObject = parseFlags(argumentObject, args);
+  // sanitize input.
+  argumentObject.first = Number(argumentObject.first);
+  argumentObject.last = Number(argumentObject.last);
+  argumentObject.firstModulus = Number(argumentObject.firstModulus);
+  argumentObject.secondModulus = Number(argumentObject.secondModulus);
+
   return argumentObject;
 };
-
-// ./fizzbuzz.js
 
 var fizzbuzzer = function fizzbuzzer(number) {
   var fizzer = arguments.length <= 1 || arguments[1] === undefined ? 3 : arguments[1];
@@ -140,19 +128,32 @@ var createFizzBuzz = function createFizzBuzz(start, end) {
   if (start > end) {
     incre = -1;
   }
-  for (var i = start; end >= start ? i <= end : i >= end; i = i + incre) {
-    output.push(fizzbuzzer(i, fizzer, buzzer, fizzOutput, buzzOutput));
-  }
-  return output;
-};
+  var earlyBreak = false;
 
-console.log(process.argv);
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+  process.stdin.on('keypress', function (key) {
+    console.log(key);
+    if (key.name == 'q') {
+      earlyBreak = true;
+    }
+  });
+
+  for (var i = start; end >= start ? i <= end : i >= end; i = i + incre) {
+    console.log("i", i);
+    output.push(fizzbuzzer(i, fizzer, buzzer, fizzOutput, buzzOutput));
+    // check to see if we've aborted via user input;
+    if (earlyBreak) {
+      return { earlyBreak: earlyBreak, output: output };
+    }
+  }
+  return { earlyBreak: earlyBreak, output: output };;
+};
 
 exports.fizzbuzzer = fizzbuzzer;
 exports.createFizzBuzz = createFizzBuzz;
 exports.getArgumentsFromCommandLine = getArgumentsFromCommandLine;
 exports.showAndRemoveSpecialFlags = showAndRemoveSpecialFlags;
-exports.prepNumbers = prepNumbers;
 exports.parseFlags = parseFlags;
 exports.processInput = processInput;
 exports.HELP_TEXT = HELP_TEXT;

@@ -11,7 +11,7 @@ const includePathOptions = {
     paths: ['src/']
 };
 
-gulp.task('compileES2015', () => {  
+gulp.task('build', () => {  
   return gulp.src('src/index.js')
         .pipe(rollup({
           sourceMap: true,
@@ -26,10 +26,10 @@ gulp.task('compileES2015', () => {
         .pipe(gulp.dest('build'));
 });
 
-gulp.task('test', ['compileES2015'], () =>{
+gulp.task('test', ['build'],() =>{
   return gulp.src('spec/test.js')
-    .pipe(mocha({reporter: 'spec', js:'babel-core/register'}))
+         .pipe(mocha({reporter: 'spec', js:'babel-core/register'}))
 
 })
 
-gulp.task('default', ['compileES2015'])
+gulp.task('default', ['build', 'test'])

@@ -1,5 +1,5 @@
 // considered using optimist but it was a bit overkill. 
-import { HELP_TEXT, VERSION } from './constants'
+import { HELP_TEXT, VERSION, NO_ARGS} from './constants'
 
 var getArgumentsFromCommandLine = function(){
   // "clArgs": "Command Line Arguments"
@@ -24,26 +24,6 @@ var showAndRemoveSpecialFlags = function(args, flags, text){
   } 
   return args;
 } 
-
-
-var prepNumbers = function(strNum){
-  var bigNumArray = []; 
-  if (typeof(strNum) == 'string'){
-    if (strNum.length < 15){
-      return toNumber(strNum); 
-    } else {
-      while(strNum.length > 0){
-        bigNumArray.push(strNum.slice(0, 15))
-        strNum = strNum.slice(15); 
-      }
-    }
-  } else if (typeof(strNum) == 'number' && strNum != NaN){
-    return strNum;
-  } else {
-    console.error("Argument is not a number nor a string which can be parsed to a number")
-    return null; 
-  }
-}
 
 // using the switch fall-through here. 
 var parseFlags = function(argObj, args){
@@ -81,6 +61,9 @@ var processInput = function(){
   const helpFlags = ['-h', 'h', 'help', '-help', '--help', '--h'];
   const versionFlags = ['-v', 'v', '-version', '--version', '--v'];
   var args = getArgumentsFromCommandLine();
+  if (args.length < 2){ 
+    console.log("Warning: Not enough arguments provided from command line") 
+  }
   args = showAndRemoveSpecialFlags(args, versionFlags, VERSION);
   args = showAndRemoveSpecialFlags(args, helpFlags, HELP_TEXT);
     // at this point, args should only contain the flags we're interested in.
@@ -98,6 +81,12 @@ var processInput = function(){
 
   // modify the argument object with any special cases that the user has entered: 
   argumentObject = parseFlags(argumentObject, args); 
+  // sanitize input.
+  argumentObject.first = Number(argumentObject.first);
+  argumentObject.last = Number(argumentObject.last);
+  argumentObject.firstModulus = Number(argumentObject.firstModulus);
+  argumentObject.secondModulus = Number(argumentObject.secondModulus); 
+
   return argumentObject; 
 } 
 

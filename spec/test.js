@@ -175,3 +175,5 @@ describe('should correctly parse command line arguments', function(){
       // here we restore process.argv to it's original value. 
     process.argv = processArgvTempHolder;
 })
+
+process.exit(); 
