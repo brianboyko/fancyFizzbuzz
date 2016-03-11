@@ -3,10 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.smushBigNum = exports.bigCreateFizzBuzz = exports.bigFizzbuzzer = exports.createFizzBuzz = exports.fizzbuzzer = undefined;
-
-var _underscore = require('underscore');
-
 var VERSION = 'v0.0.1';
 
 var HELP_TEXT = 'Welcome to FancyFizzBuzz!, version ' + VERSION + '\r\n\r\nInstallation: \r\n==============================\r\n| $ npm run build\r\n==============================\r\n\r\nCommand Line Usage (from root directory of this project): \r\n==============================\r\n| $ node build/main.js <first> <last> (-h, -v) [-i <filename>] \r\n|        [-o <filename>] [-m <first modulus> <second modulus>] \r\n|        [-t “<first term>” “<second term>”]\r\n==============================\r\n\r\nwhere <first> and <last> are integers. \r\n\r\n* The program can handle any integers from -999,999,999,999,999 to \r\n999,999,999,999,999. \r\n\r\nOther parameters: (case insensitive)\r\n node index.js -h (or -help)\r\n   => Read this help document\r\n node index.js -v (or -version)\r\n   => Get version info\r\n node index.js -i (or -input) [filename]\r\n   => Input min and max from text file. \r\n      This must be in the form "#, #"\r\n      (This is a fairly useless feature but can be expanded\r\n      to include JSON parameters for fine tuning on later features)\r\n node index.js -o (or -output) [filename]\r\n   => Output to file, instead of console\r\n node index.js -m (or -moduli) [fizz modulus] [buzz modulus]\r\n   => Define the string replacement conditions;\r\n      Defaults are 3 and 5, respectively.\r\n      Example: \r\n       $ node index.js 1 10 -m 2 5 \r\n       => “1, Fizz!, 3, Fizz!, Buzz!, \r\n           Fizz!, 7, Fizz!, 9, FizzBuzz!”\r\n node index.js -t (or -terms) [fizz term] [buzz term]\r\n   => Redefine the strings to replace integers with\r\n      Example: \r\n       $ node index.js 1 7 -t “Foo” “Bar” \r\n       => “1, 2, Foo!, 4, Bar!, 7”';
@@ -76,8 +72,8 @@ var processInput = function processInput() {
   // at this point, args should only contain the flags we're interested in.
 
   var argumentObject = {
-    first: Number(args[0]), // required
-    last: Number(args[1]), // required
+    first: args[0], // required
+    last: args[1], // required
     firstModulus: 3, // default.
     secondModulus: 5, // default.
     input: null,
@@ -154,7 +150,7 @@ function parseInputFile(inputObj) {
               inputObj.first = data[0];
               inputObj.last = data[1];
               // sadly, until async/await is fully implimented in ES7,
-              // we are stuck in this callback. 
+              // we are stuck in this callback.
               fs.close(fd);
               delete inputObj.input; // we can delete this because we no longer need it. We have our numbers.
               lockNums(inputObj); // call lockNums and pass in the new numbers we got from the file;
@@ -164,7 +160,7 @@ function parseInputFile(inputObj) {
       }
     });
   } else {
-      delete inputObj.input; // we can delete this because it was null to begin with. 
+      delete inputObj.input; // we can delete this because it was null to begin with.
       lockNums(inputObj); // call lockNums and pass in the numbers
     }
 }
@@ -186,7 +182,7 @@ function lockNums(inputObj) {
     var stream = fs.createWriteStream(inputObj.output);
     stream.once('open', function (fd) {
       var streamOut = stream.write.bind(this); // bind(this) is needed, otherwise this._writableState will be undefined
-      writeOutAll(streamOut, inputObj); // dependency injection -- this way we don't have to write two different functions for outputting to file and outputing to the console. 
+      writeOutAll(streamOut, inputObj); // dependency injection -- this way we don't have to write two different functions for outputting to file and outputing to the console.
       stream.end();
     });
   } else {
@@ -230,11 +226,6 @@ function writeOutAll(outputFunc, inputObj) {
 // a specialty library for handling big integers.
 
 var bigInt = require("big-integer");
-function smushBigNum(arrayOfNumbers) {
-  return (0, _underscore.reduce)(arrayOfNumbers, function (prev, curr) {
-    return prev + curr;
-  }, "");
-}
 
 var bigFizzbuzzer = function bigFizzbuzzer(stringNumber) {
   var fizzer = arguments.length <= 1 || arguments[1] === undefined ? 3 : arguments[1];
@@ -244,7 +235,7 @@ var bigFizzbuzzer = function bigFizzbuzzer(stringNumber) {
 
   // one could argue that 0 is modulo all numbers, but I think this is better default behavior.
   // The fizzer and buzzer are going to be javascript numbers.
-  if (bigInt(stringNumber).isSmall && bigInt(stringNumber).value === 0) {
+  if (bigInt(stringNumber).isSmall & bigInt(stringNumber).value === 0) {
     return 0;
   };
   if (bigInt(stringNumber).mod(fizzer).value === 0 && bigInt(stringNumber).mod(buzzer).value === 0) {
@@ -254,7 +245,7 @@ var bigFizzbuzzer = function bigFizzbuzzer(stringNumber) {
   } else if (bigInt(stringNumber).mod(buzzer).value === 0) {
     return buzzOutput + "!";
   } else {
-    return bigInt(stringNumber).isSmall ? bigInt(stringNumber).value : smushBigNum(bigInt(stringNumber).value);
+    return bigInt(stringNumber).isSmall ? bigInt(stringNumber).value : bigInt(stringNumber).toString();
   }
 };
 
@@ -277,11 +268,12 @@ var bigCreateFizzBuzz = function bigCreateFizzBuzz(start, end) {
 };
 
 var inputObj = processInput();
-parseInputFile(inputObj);
+parseInputFile(inputObj); // this will actually call lockNums as a callback.
+
+console.log("bigbuzz", bigCreateFizzBuzz('100000000000000001', '100000000000000015'));
 
 exports.fizzbuzzer = fizzbuzzer;
 exports.createFizzBuzz = createFizzBuzz;
 exports.bigFizzbuzzer = bigFizzbuzzer;
 exports.bigCreateFizzBuzz = bigCreateFizzBuzz;
-exports.smushBigNum = smushBigNum;
 //# sourceMappingURL=main.js.map

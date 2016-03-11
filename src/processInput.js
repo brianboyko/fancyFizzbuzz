@@ -1,33 +1,33 @@
-// considered using optimist but it was a bit overkill. 
+// considered using optimist but it was a bit overkill.
 import { HELP_TEXT, VERSION } from './constants'
 
 var getArgumentsFromCommandLine = function(){
   // "clArgs": "Command Line Arguments"
-  var clArgs = []; 
+  var clArgs = [];
     process.argv.forEach(function (val, index, array) {
       clArgs.push(val);
   });
-  return clArgs.slice(2); 
+  return clArgs.slice(2);
 }
 
 
 
 var showAndRemoveSpecialFlags = function(args, flags, text){
-  var showed = false; 
+  var showed = false;
   for (var i = 0; i < flags.length; i++){
     if (args.indexOf(flags[i]) != -1){
       if (!showed) {
        console.log(text); // help text and version text should never be written to file.
-       showed = true; 
+       showed = true;
       }
-      // removes the flag. 
+      // removes the flag.
       args.splice(args.indexOf(flags[i]), 1)
     }
-  } 
+  }
   return args;
-} 
+}
 
-// using the switch fall-through here. 
+// using the switch fall-through here.
 var parseFlags = function(argObj, args){
   for (var i = 0; i < args.length; i++){
     switch(args[i]){
@@ -42,12 +42,12 @@ var parseFlags = function(argObj, args){
         break;
       case '-i':
       case '-input':
-        argObj.input = args[i+1]; 
-        break; 
+        argObj.input = args[i+1];
+        break;
       case '-o':
       case '-output':
-        argObj.output = args[i+1]; 
-        break; 
+        argObj.output = args[i+1];
+        break;
       case '-t':
       case '-terms':
         argObj.fizzTerm = args[i+1];
@@ -56,7 +56,7 @@ var parseFlags = function(argObj, args){
       break;
     }
   }
-  return argObj; 
+  return argObj;
 }
 
 var processInput = function(){
@@ -68,20 +68,20 @@ var processInput = function(){
     // at this point, args should only contain the flags we're interested in.
 
   var argumentObject = {
-    first: Number(args[0]), // required
-    last: Number(args[1]), // required
-    firstModulus: 3, // default. 
-    secondModulus: 5, // default. 
+    first: args[0], // required
+    last: args[1], // required
+    firstModulus: 3, // default.
+    secondModulus: 5, // default.
     input: null,
     output: null,
     fizzTerm: "Fizz", // default.
-    buzzTerm: "Buzz", // default. 
+    buzzTerm: "Buzz", // default.
   }
 
-  // modify the argument object with any special cases that the user has entered: 
-  argumentObject = parseFlags(argumentObject, args); 
-  return argumentObject; 
-} 
+  // modify the argument object with any special cases that the user has entered:
+  argumentObject = parseFlags(argumentObject, args);
+  return argumentObject;
+}
 
 
-export { processInput } 
+export { processInput }
