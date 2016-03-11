@@ -64,7 +64,7 @@ function lockNums(inputObj) { // like the name suggests, the numbers we're using
 }
 
 function writeOutAll(outputFunc, inputObj) { // output.func will either be a a file stream OR console.log, if no file was specified.
-
+  // do here? check if bignum(inputObj.first or last).isSmall is false, if so, shunt to bigWriteOutAll(); 
   const chunkSize = 10000; // arbitrary.
   var complete = false; // ends our while loop if true.
   var checkpoint = inputObj.first;

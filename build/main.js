@@ -70,7 +70,7 @@ var processInput = function processInput() {
   args = showAndRemoveSpecialFlags(args, versionFlags, VERSION);
   args = showAndRemoveSpecialFlags(args, helpFlags, HELP_TEXT);
   // at this point, args should only contain the flags we're interested in.
-
+  console.log(args);
   var argumentObject = {
     first: args[0], // required
     last: args[1], // required
