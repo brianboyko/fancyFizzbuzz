@@ -147,6 +147,13 @@ describe('bigFizzbuzzer should return the correct output for even small numbers'
         assert.equal(bigFizzbuzzer(7), 7);
     });
 
+    it('it should handle huge numbers (when passed in as strings)', function () {
+        assert.equal(bigFizzbuzzer("900000000000000000000001"), "900000000000000000000001");
+        assert.equal(bigFizzbuzzer("900000000000000000000003"), "Fizz!");
+        assert.equal(bigFizzbuzzer("900000000000000000000005"), "Buzz!");
+        assert.equal(bigFizzbuzzer("900000000000000000000000"), "FizzBuzz!");
+    });
+
 
 })
 
@@ -156,7 +163,7 @@ describe('bigCreateFizzBuzz should return the correct output even for small numb
     const tst_1_15 = [ 1, 2, 'Fizz!', 4, 'Buzz!', 'Fizz!', 7, 8, 'Fizz!', 'Buzz!', 11, 'Fizz!', 13, 14, 'FizzBuzz!' ];
     const tst_1_28_4_7 = [ 1, 2, 3, 'Foo!', 5, 6, 'Bar!', 'Foo!', 9, 10, 11, 'Foo!', 13, 'Bar!', 15, 'Foo!', 17, 18, 19, 'Foo!', 'Bar!', 22, 23, 'Foo!', 25, 26, 27, 'FooBar!' ];
     const tst_minus15_15 = ["FizzBuzz!",-14,-13,"Fizz!",-11,"Buzz!","Fizz!",-8,-7,"Fizz!","Buzz!",-4,"Fizz!",-2,-1,0,1,2,"Fizz!",4,"Buzz!","Fizz!",7,8,"Fizz!","Buzz!",11,"Fizz!",13,14,"FizzBuzz!"]
-
+    const tst_hugeNums = ["900000000000000000000001","900000000000000000000002","Fizz!","900000000000000000000004","Buzz!","Fizz!","900000000000000000000007","900000000000000000000008","Fizz!","Buzz!","900000000000000000000011","Fizz!","900000000000000000000013","900000000000000000000014","FizzBuzz!"]
     it('and should do a standard fizzbuzz with no other arguments', function () {
         // two identical arrays will not evaluate to be "equal" to each other. Stringification is a good solution to this problem.
         assert.equal(JSON.stringify(bigCreateFizzBuzz(1, 15)), JSON.stringify(tst_1_15));
@@ -183,5 +190,10 @@ describe('bigCreateFizzBuzz should return the correct output even for small numb
     it('and should handle positive numbers, negative numbers, and 0', function () {
         // two identical arrays will not evaluate to be "equal" to each other. Stringification is a good solution to this problem.
         assert.equal(JSON.stringify(bigCreateFizzBuzz(-15, 15)), JSON.stringify(tst_minus15_15));
+    });
+
+    it('and should handle big numbers', function () {
+        // two identical arrays will not evaluate to be "equal" to each other. Stringification is a good solution to this problem.
+        assert.equal(JSON.stringify(bigCreateFizzBuzz("900000000000000000000001", "900000000000000000000015")), JSON.stringify(tst_hugeNums));
     });
 })
