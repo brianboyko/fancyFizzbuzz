@@ -25,6 +25,8 @@
     "should": "^8.2.2"
   },
   "dependencies": {
-    "fs": "0.0.2"
+    "big-integer": "^1.6.12",
+    "fs": "0.0.2",
+    "underscore": "^1.8.3"
   }
 }

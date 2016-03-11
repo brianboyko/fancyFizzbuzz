@@ -3,6 +3,10 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.smushBigNum = exports.bigCreateFizzBuzz = exports.bigFizzbuzzer = exports.createFizzBuzz = exports.fizzbuzzer = undefined;
+
+var _underscore = require('underscore');
+
 var VERSION = 'v0.0.1';
 
 var HELP_TEXT = 'Welcome to FancyFizzBuzz!, version ' + VERSION + '\r\n\r\nInstallation: \r\n==============================\r\n| $ npm run build\r\n==============================\r\n\r\nCommand Line Usage (from root directory of this project): \r\n==============================\r\n| $ node build/main.js <first> <last> (-h, -v) [-i <filename>] \r\n|        [-o <filename>] [-m <first modulus> <second modulus>] \r\n|        [-t “<first term>” “<second term>”]\r\n==============================\r\n\r\nwhere <first> and <last> are integers. \r\n\r\n* The program can handle any integers from -999,999,999,999,999 to \r\n999,999,999,999,999. \r\n\r\nOther parameters: (case insensitive)\r\n node index.js -h (or -help)\r\n   => Read this help document\r\n node index.js -v (or -version)\r\n   => Get version info\r\n node index.js -i (or -input) [filename]\r\n   => Input min and max from text file. \r\n      This must be in the form "#, #"\r\n      (This is a fairly useless feature but can be expanded\r\n      to include JSON parameters for fine tuning on later features)\r\n node index.js -o (or -output) [filename]\r\n   => Output to file, instead of console\r\n node index.js -m (or -moduli) [fizz modulus] [buzz modulus]\r\n   => Define the string replacement conditions;\r\n      Defaults are 3 and 5, respectively.\r\n      Example: \r\n       $ node index.js 1 10 -m 2 5 \r\n       => “1, Fizz!, 3, Fizz!, Buzz!, \r\n           Fizz!, 7, Fizz!, 9, FizzBuzz!”\r\n node index.js -t (or -terms) [fizz term] [buzz term]\r\n   => Redefine the strings to replace integers with\r\n      Example: \r\n       $ node index.js 1 7 -t “Foo” “Bar” \r\n       => “1, 2, Foo!, 4, Bar!, 7”';
@@ -222,9 +226,62 @@ function writeOutAll(outputFunc, inputObj) {
   }
 }
 
+// ./bigBuzz.js
+// a specialty library for handling big integers.
+
+var bigInt = require("big-integer");
+function smushBigNum(arrayOfNumbers) {
+  return (0, _underscore.reduce)(arrayOfNumbers, function (prev, curr) {
+    return prev + curr;
+  }, "");
+}
+
+var bigFizzbuzzer = function bigFizzbuzzer(stringNumber) {
+  var fizzer = arguments.length <= 1 || arguments[1] === undefined ? 3 : arguments[1];
+  var buzzer = arguments.length <= 2 || arguments[2] === undefined ? 5 : arguments[2];
+  var fizzOutput = arguments.length <= 3 || arguments[3] === undefined ? "Fizz" : arguments[3];
+  var buzzOutput = arguments.length <= 4 || arguments[4] === undefined ? "Buzz" : arguments[4];
+
+  // one could argue that 0 is modulo all numbers, but I think this is better default behavior.
+  // The fizzer and buzzer are going to be javascript numbers.
+  if (bigInt(stringNumber).isSmall && bigInt(stringNumber).value === 0) {
+    return 0;
+  };
+  if (bigInt(stringNumber).mod(fizzer).value === 0 && bigInt(stringNumber).mod(buzzer).value === 0) {
+    return "" + fizzOutput + buzzOutput + '!';
+  } else if (bigInt(stringNumber).mod(fizzer).value === 0) {
+    return fizzOutput + "!";
+  } else if (bigInt(stringNumber).mod(buzzer).value === 0) {
+    return buzzOutput + "!";
+  } else {
+    return bigInt(stringNumber).isSmall ? bigInt(stringNumber).value : smushBigNum(bigInt(stringNumber).value);
+  }
+};
+
+var bigCreateFizzBuzz = function bigCreateFizzBuzz(start, end) {
+  var fizzer = arguments.length <= 2 || arguments[2] === undefined ? 3 : arguments[2];
+  var buzzer = arguments.length <= 3 || arguments[3] === undefined ? 5 : arguments[3];
+  var fizzOutput = arguments.length <= 4 || arguments[4] === undefined ? "Fizz" : arguments[4];
+  var buzzOutput = arguments.length <= 5 || arguments[5] === undefined ? "Buzz" : arguments[5];
+
+  var output = [];
+  //bigInt(a).compare(b) => a<b: -1, a=b: 0, a>b: 1
+  var incre = bigInt(start).compare(end) * -1;
+  // Bad code: while (bigInt(start).compare(end) != 0){ will not run the last number inclusive.
+  while (bigInt(start).compare(end) - incre !== 0) {
+    output.push(bigFizzbuzzer(start, fizzer, buzzer, fizzOutput, buzzOutput));
+    // can do this without mutation?
+    start = bigInt(start).add(incre);
+  }
+  return output;
+};
+
 var inputObj = processInput();
 parseInputFile(inputObj);
 
 exports.fizzbuzzer = fizzbuzzer;
 exports.createFizzBuzz = createFizzBuzz;
+exports.bigFizzbuzzer = bigFizzbuzzer;
+exports.bigCreateFizzBuzz = bigCreateFizzBuzz;
+exports.smushBigNum = smushBigNum;
 //# sourceMappingURL=main.js.map
