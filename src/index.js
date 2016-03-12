@@ -4,12 +4,10 @@ import { parseInputFile } from './fileOperations'; // tests require access to th
 // these are needed for running the mocha tests.
 import {fizzbuzzer, createFizzBuzz} from './fizzbuzz.js';
 import {bigFizzbuzzer, bigCreateFizzBuzz} from './bigBuzz.js';
-var bigInt = require('big-integer')
 
-var inputObj = processInput();
-parseInputFile(inputObj); // this will actually call lockNums as a callback.
-
+  var inputObj = processInput();
+  parseInputFile(inputObj); // this will actually call lockNums as a callback.
 
 
-// these are needed for running the mocha tests.
+
 export { fizzbuzzer, createFizzBuzz, bigFizzbuzzer, bigCreateFizzBuzz }

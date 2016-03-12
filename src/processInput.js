@@ -4,6 +4,7 @@ var bigInt = require("big-integer");
 
 
 var getArgumentsFromCommandLine = function(){
+
   // "clArgs": "Command Line Arguments"
   var clArgs = [];
     process.argv.forEach(function (val, index, array) {
@@ -84,7 +85,6 @@ var processInput = function(){
     // at this point, args should only contain the flags we're interested in.
     if (args[0] == undefined || args[1] == undefined){
       console.log(HELP_TEXT);
-      process.exit(0)
     }
 
   var argumentObject = {
@@ -108,3 +108,4 @@ var processInput = function(){
 
 
 export { processInput }
+

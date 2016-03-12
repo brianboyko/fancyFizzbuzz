@@ -1,7 +1,9 @@
 // test fizzbuzz
 var assert = require('assert');
 
-import {fizzbuzzer, createFizzBuzz, bigFizzbuzzer, bigCreateFizzBuzz, smushBigNum} from '../build/main.js'
+import { fizzbuzzer, createFizzBuzz } from '../src/fizzbuzz.js'
+import { bigFizzbuzzer, bigCreateFizzBuzz } from '../src/bigBuzz.js'
+
 
 describe('Fizzbuzzer should return the correct output', function () {
 
