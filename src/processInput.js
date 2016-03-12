@@ -1,5 +1,7 @@
 // considered using optimist but it was a bit overkill.
 import { HELP_TEXT, VERSION } from './constants'
+var bigInt = require("big-integer");
+
 
 var getArgumentsFromCommandLine = function(){
   // "clArgs": "Command Line Arguments"
@@ -56,7 +58,21 @@ var parseFlags = function(argObj, args){
       break;
     }
   }
-  return argObj;
+  return argObj; 
+}
+
+var parseIfBig = function(argumentObject){
+  if ( typeof(argumentObject.first) == 'number' && 
+       typeof(argumentObject.last) == 'number' ){
+    return argumentObject;
+  } else if ( isNaN(Number(argumentObject.first)) || isNaN(Number(argumentObject.last))) {
+    console.log("Error: argument is neither a number nor a string that can be parsed into a number.");
+  } else {
+    argumentObject.first = bigInt(argumentObject.first); 
+    argumentObject.last = bigInt(argumentObject.last);
+    argumentObject.big = true; 
+    return argumentObject;
+  }
 }
 
 var processInput = function(){
@@ -66,7 +82,11 @@ var processInput = function(){
   args = showAndRemoveSpecialFlags(args, versionFlags, VERSION);
   args = showAndRemoveSpecialFlags(args, helpFlags, HELP_TEXT);
     // at this point, args should only contain the flags we're interested in.
-    console.log(args); 
+    if (args[0] == undefined || args[1] == undefined){
+      console.log(HELP_TEXT);
+      process.exit(0)
+    }
+
   var argumentObject = {
     first: args[0], // required
     last: args[1], // required
@@ -76,10 +96,13 @@ var processInput = function(){
     output: null,
     fizzTerm: "Fizz", // default.
     buzzTerm: "Buzz", // default.
+    big: false
   }
 
   // modify the argument object with any special cases that the user has entered:
   argumentObject = parseFlags(argumentObject, args);
+  argumentObject = parseIfBig(argumentObject); 
+
   return argumentObject;
 }
 

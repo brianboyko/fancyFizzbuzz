@@ -31,3 +31,8 @@ gulp.task('test', ['build'], () =>{
     .pipe(mocha({reporter: 'spec', js:'babel-core/register'}))
 
 })
+
+gulp.task('watch', function(){
+  gulp.watch('src/**/*.js', ['build']);
+})
+

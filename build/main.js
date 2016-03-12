@@ -7,6 +7,8 @@ var VERSION = 'v0.0.1';
 
 var HELP_TEXT = 'Welcome to FancyFizzBuzz!, version ' + VERSION + '\r\n\r\nInstallation: \r\n==============================\r\n| $ npm run build\r\n==============================\r\n\r\nCommand Line Usage (from root directory of this project): \r\n==============================\r\n| $ node build/main.js <first> <last> (-h, -v) [-i <filename>] \r\n|        [-o <filename>] [-m <first modulus> <second modulus>] \r\n|        [-t “<first term>” “<second term>”]\r\n==============================\r\n\r\nwhere <first> and <last> are integers. \r\n\r\n* The program can handle any integers from -999,999,999,999,999 to \r\n999,999,999,999,999. \r\n\r\nOther parameters: (case insensitive)\r\n node index.js -h (or -help)\r\n   => Read this help document\r\n node index.js -v (or -version)\r\n   => Get version info\r\n node index.js -i (or -input) [filename]\r\n   => Input min and max from text file. \r\n      This must be in the form "#, #"\r\n      (This is a fairly useless feature but can be expanded\r\n      to include JSON parameters for fine tuning on later features)\r\n node index.js -o (or -output) [filename]\r\n   => Output to file, instead of console\r\n node index.js -m (or -moduli) [fizz modulus] [buzz modulus]\r\n   => Define the string replacement conditions;\r\n      Defaults are 3 and 5, respectively.\r\n      Example: \r\n       $ node index.js 1 10 -m 2 5 \r\n       => “1, Fizz!, 3, Fizz!, Buzz!, \r\n           Fizz!, 7, Fizz!, 9, FizzBuzz!”\r\n node index.js -t (or -terms) [fizz term] [buzz term]\r\n   => Redefine the strings to replace integers with\r\n      Example: \r\n       $ node index.js 1 7 -t “Foo” “Bar” \r\n       => “1, 2, Foo!, 4, Bar!, 7”';
 
+var bigInt$1 = require("big-integer");
+
 var getArgumentsFromCommandLine = function getArgumentsFromCommandLine() {
   // "clArgs": "Command Line Arguments"
   var clArgs = [];
@@ -63,6 +65,19 @@ var parseFlags = function parseFlags(argObj, args) {
   return argObj;
 };
 
+var parseIfBig = function parseIfBig(argumentObject) {
+  if (typeof argumentObject.first == 'number' && typeof argumentObject.last == 'number') {
+    return argumentObject;
+  } else if (isNaN(Number(argumentObject.first)) || isNaN(Number(argumentObject.last))) {
+    console.log("Error: argument is neither a number nor a string that can be parsed into a number.");
+  } else {
+    argumentObject.first = bigInt$1(argumentObject.first);
+    argumentObject.last = bigInt$1(argumentObject.last);
+    argumentObject.big = true;
+    return argumentObject;
+  }
+};
+
 var processInput = function processInput() {
   var helpFlags = ['-h', 'h', 'help', '-help', '--help', '--v'];
   var versionFlags = ['-v', 'v', '-version', '--version', '--v'];
@@ -70,7 +85,11 @@ var processInput = function processInput() {
   args = showAndRemoveSpecialFlags(args, versionFlags, VERSION);
   args = showAndRemoveSpecialFlags(args, helpFlags, HELP_TEXT);
   // at this point, args should only contain the flags we're interested in.
-  console.log(args);
+  if (args[0] == undefined || args[1] == undefined) {
+    console.log(HELP_TEXT);
+    process.exit(0);
+  }
+
   var argumentObject = {
     first: args[0], // required
     last: args[1], // required
@@ -79,11 +98,14 @@ var processInput = function processInput() {
     input: null,
     output: null,
     fizzTerm: "Fizz", // default.
-    buzzTerm: "Buzz" };
+    buzzTerm: "Buzz", // default.
+    big: false
+  };
 
-  // default.
   // modify the argument object with any special cases that the user has entered:
   argumentObject = parseFlags(argumentObject, args);
+  argumentObject = parseIfBig(argumentObject);
+
   return argumentObject;
 };
 
@@ -128,6 +150,51 @@ var createFizzBuzz = function createFizzBuzz(start, end) {
   return output;
 };
 
+// ./bigBuzz.js
+// a specialty library for handling big integers.
+
+var bigInt$2 = require("big-integer");
+
+var bigFizzbuzzer = function bigFizzbuzzer(stringNumber) {
+  var fizzer = arguments.length <= 1 || arguments[1] === undefined ? 3 : arguments[1];
+  var buzzer = arguments.length <= 2 || arguments[2] === undefined ? 5 : arguments[2];
+  var fizzOutput = arguments.length <= 3 || arguments[3] === undefined ? "Fizz" : arguments[3];
+  var buzzOutput = arguments.length <= 4 || arguments[4] === undefined ? "Buzz" : arguments[4];
+
+  // one could argue that 0 is modulo all numbers, but I think this is better default behavior.
+  // The fizzer and buzzer are going to be javascript numbers.
+  if (bigInt$2(stringNumber).isSmall & bigInt$2(stringNumber).value === 0) {
+    return 0;
+  };
+  if (bigInt$2(stringNumber).mod(fizzer).value === 0 && bigInt$2(stringNumber).mod(buzzer).value === 0) {
+    return "" + fizzOutput + buzzOutput + '!';
+  } else if (bigInt$2(stringNumber).mod(fizzer).value === 0) {
+    return fizzOutput + "!";
+  } else if (bigInt$2(stringNumber).mod(buzzer).value === 0) {
+    return buzzOutput + "!";
+  } else {
+    return bigInt$2(stringNumber).isSmall ? bigInt$2(stringNumber).value : bigInt$2(stringNumber).toString();
+  }
+};
+
+var bigCreateFizzBuzz = function bigCreateFizzBuzz(start, end) {
+  var fizzer = arguments.length <= 2 || arguments[2] === undefined ? 3 : arguments[2];
+  var buzzer = arguments.length <= 3 || arguments[3] === undefined ? 5 : arguments[3];
+  var fizzOutput = arguments.length <= 4 || arguments[4] === undefined ? "Fizz" : arguments[4];
+  var buzzOutput = arguments.length <= 5 || arguments[5] === undefined ? "Buzz" : arguments[5];
+
+  var output = [];
+  //bigInt(a).compare(b) => a<b: -1, a=b: 0, a>b: 1
+  var incre = bigInt$2(start).compare(end) * -1;
+  // Bad code: while (bigInt(start).compare(end) != 0){ will not run the last number inclusive.
+  while (bigInt$2(start).compare(end) - incre !== 0) {
+    output.push(bigFizzbuzzer(start, fizzer, buzzer, fizzOutput, buzzOutput));
+    // can do this without mutation?
+    start = bigInt$2(start).add(incre);
+  }
+  return output;
+};
+
 var fs = require('fs');
 
 //Check to see if we will get the parameters from an input file.
@@ -136,7 +203,7 @@ var fs = require('fs');
 // whether that's something we need to wait on a file read for
 // or something we can do immediately.
 function parseInputFile(inputObj) {
-  if (inputObj.input !== null) {
+  if (inputObj.input !== null && inputObj.input !== undefined) {
     var fileName = inputObj.input;
     fs.exists(fileName, function (exists) {
       if (exists) {
@@ -170,14 +237,6 @@ function parseInputFile(inputObj) {
 
 function lockNums(inputObj) {
   // like the name suggests, the numbers we're using will be locked by this point.
-  if (isNaN(inputObj.first) || isNaN(inputObj.last)) {
-    console.log("WARN: One or both parameters were NaN:");
-    console.log("inputObj in lockNums(inputObj):", inputObj);
-    // Oddly enough, some tests will produce this.
-    // this actually is a serious concern of mine but simply ran out of time.
-    return;
-  }
-
   if (inputObj.output !== null) {
     var stream = fs.createWriteStream(inputObj.output);
     stream.once('open', function (fd) {
@@ -192,6 +251,10 @@ function lockNums(inputObj) {
 
 function writeOutAll(outputFunc, inputObj) {
   // output.func will either be a a file stream OR console.log, if no file was specified.
+  if (inputObj.big) {
+    writeOutBig(outputFunc, inputObj);
+    return;
+  }
 
   var chunkSize = 10000; // arbitrary.
   var complete = false; // ends our while loop if true.
@@ -222,55 +285,42 @@ function writeOutAll(outputFunc, inputObj) {
   }
 }
 
-// ./bigBuzz.js
-// a specialty library for handling big integers.
+function writeOutBig(outputFunc, inputObj) {
+  // output.func will either be a a file stream OR console.log, if no file was specified.
 
-var bigInt = require("big-integer");
-
-var bigFizzbuzzer = function bigFizzbuzzer(stringNumber) {
-  var fizzer = arguments.length <= 1 || arguments[1] === undefined ? 3 : arguments[1];
-  var buzzer = arguments.length <= 2 || arguments[2] === undefined ? 5 : arguments[2];
-  var fizzOutput = arguments.length <= 3 || arguments[3] === undefined ? "Fizz" : arguments[3];
-  var buzzOutput = arguments.length <= 4 || arguments[4] === undefined ? "Buzz" : arguments[4];
-
-  // one could argue that 0 is modulo all numbers, but I think this is better default behavior.
-  // The fizzer and buzzer are going to be javascript numbers.
-  if (bigInt(stringNumber).isSmall & bigInt(stringNumber).value === 0) {
-    return 0;
-  };
-  if (bigInt(stringNumber).mod(fizzer).value === 0 && bigInt(stringNumber).mod(buzzer).value === 0) {
-    return "" + fizzOutput + buzzOutput + '!';
-  } else if (bigInt(stringNumber).mod(fizzer).value === 0) {
-    return fizzOutput + "!";
-  } else if (bigInt(stringNumber).mod(buzzer).value === 0) {
-    return buzzOutput + "!";
-  } else {
-    return bigInt(stringNumber).isSmall ? bigInt(stringNumber).value : bigInt(stringNumber).toString();
+  var bigChunkSize = 1000000; // arbitrary.
+  var complete = false; // ends our while loop if true.
+  var checkpoint = inputObj.first;
+  var nextCheckpoint;
+  while (!complete) {
+    if (Math.abs(checkpoint - inputObj.last) < bigChunkSize) {
+      outputFunc( // console or file
+      JSON.stringify( // stream needs to be a string.
+      bigCreateFizzBuzz(checkpoint, inputObj.last, inputObj.firstModulus, inputObj.secondModulus, inputObj.fizzTerm, inputObj.buzzTerm)).slice(1, -1) // we want to take off those pesky array "[" and "]" characters, so that our number line is contiguous
+      );
+      complete = true;
+    } else {
+      if (checkpoint < inputObj.last) {
+        // if we're counting up.
+        nextCheckpoint = checkpoint + chunkSize;
+      } else {
+        // if we're counting down.
+        nextCheckpoint = checkpoint - chunkSize;
+      }
+      outputFunc( // console or file
+      JSON.stringify( // stream needs to be a string.
+      bigCreateFizzBuzz(checkpoint, nextCheckpoint - 1, inputObj.firstModulus, inputObj.secondModulus, inputObj.fizzTerm, inputObj.buzzTerm)).slice(1, -1) + ',' // we want to take off those pesky array "[" and "]" characters, so that our number line is contiguous, and add a trailing comma.
+      );
+      console.log("Processing #" + checkpoint + " to #" + nextCheckpoint);
+      checkpoint = nextCheckpoint;
+    }
   }
-};
+}
 
-var bigCreateFizzBuzz = function bigCreateFizzBuzz(start, end) {
-  var fizzer = arguments.length <= 2 || arguments[2] === undefined ? 3 : arguments[2];
-  var buzzer = arguments.length <= 3 || arguments[3] === undefined ? 5 : arguments[3];
-  var fizzOutput = arguments.length <= 4 || arguments[4] === undefined ? "Fizz" : arguments[4];
-  var buzzOutput = arguments.length <= 5 || arguments[5] === undefined ? "Buzz" : arguments[5];
-
-  var output = [];
-  //bigInt(a).compare(b) => a<b: -1, a=b: 0, a>b: 1
-  var incre = bigInt(start).compare(end) * -1;
-  // Bad code: while (bigInt(start).compare(end) != 0){ will not run the last number inclusive.
-  while (bigInt(start).compare(end) - incre !== 0) {
-    output.push(bigFizzbuzzer(start, fizzer, buzzer, fizzOutput, buzzOutput));
-    // can do this without mutation?
-    start = bigInt(start).add(incre);
-  }
-  return output;
-};
+var bigInt = require('big-integer');
 
 var inputObj = processInput();
-parseInputFile(inputObj); // this will actually call lockNums as a callback.
-
-console.log("bigbuzz", bigCreateFizzBuzz('100000000000000001', '100000000000000015'));
+parseInputFile(inputObj);
 
 exports.fizzbuzzer = fizzbuzzer;
 exports.createFizzBuzz = createFizzBuzz;
