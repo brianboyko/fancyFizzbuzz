@@ -83,6 +83,10 @@ Newly completed features: (Post-deadline)
 
 * Fixed bug where calling FizzBuzz with the -h or -v flag will show a warning message. 
 
+* Discovered and fixed a bug where it was incorrectly shunting to process all integers as big integers, this was inefficient but did not affect functionality. 
+
+* Fixing that bug caused me to discover a bug the tests did not pick up where a variable was misnamed. Fixed. 
+
 Still to do:
 
 * Add responsive features so that user can quit from the command line. 

@@ -302,10 +302,10 @@ function writeOutBig(outputFunc, inputObj) {
     } else {
       if (checkpoint < inputObj.last) {
         // if we're counting up.
-        nextCheckpoint = checkpoint + chunkSize;
+        nextCheckpoint = checkpoint + bigChunkSize;
       } else {
         // if we're counting down.
-        nextCheckpoint = checkpoint - chunkSize;
+        nextCheckpoint = checkpoint - bigChunkSize;
       }
       outputFunc( // console or file
       JSON.stringify( // stream needs to be a string.
