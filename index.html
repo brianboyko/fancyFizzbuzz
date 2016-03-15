@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Fancyfizzbuzz by brianboyko</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Fancyfizzbuzz</h1>
+        <h2>Anything Not Worth Engineering Is Worth OverEngineering. </h2>
+        <a href="https://github.com/brianboyko/fancyFizzbuzz" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h2>
+<a id="welcome-to-fancyfizzbuzz-version-001" class="anchor" href="#welcome-to-fancyfizzbuzz-version-001" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to FancyFizzBuzz!, version 0.0.1</h2>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation:</h2>
+
+<pre><code>$ npm run build
+</code></pre>
+
+<p>Command Line Usage (from root directory of this project): </p>
+
+<pre><code>$ node build/main.js &lt;first&gt; &lt;last&gt; (-h, -v) [-i &lt;filename&gt;] 
+     [-o &lt;filename&gt;] [-m &lt;first modulus&gt; &lt;second modulus&gt;] 
+     [-t “&lt;first term&gt;” “&lt;second term&gt;”]
+
+where &lt;first&gt; and &lt;last&gt; are integers. 
+</code></pre>
+
+<p>For integers larger than 9007199254740991 or less than -9007199254740991, be sure to write your numbers as strings from the command line, by putting them in quotes. Javascript can only handle numbers between -(2^53-1) and (2^53-1), so any number outside that range must be entered as a string.</p>
+
+<pre><code>Other parameters: (case insensitive)
+ node index.js -h (or -help)
+   =&gt; Read this help document
+ node index.js -v (or -version)
+   =&gt; Get version info
+ node index.js -i (or -input) [filename]
+   =&gt; Input min and max from text file. 
+      This must be in the form "#, #"
+      (This is a fairly useless feature but can be expanded
+      to include JSON parameters for fine tuning on later features)
+ node index.js -o (or -output) [filename]
+   =&gt; Output to file, instead of console
+ node index.js -m (or -moduli) [fizz modulus] [buzz modulus]
+   =&gt; Define the string replacement conditions;
+      Defaults are 3 and 5, respectively.
+      Example: 
+       $ node index.js 1 10 -m 2 5 
+       =&gt; “1, Fizz!, 3, Fizz!, Buzz!, 
+           Fizz!, 7, Fizz!, 9, FizzBuzz!”
+ node index.js -t (or -terms) [fizz term] [buzz term]
+  =&gt; Redefine the strings to replace integers with
+      Example: 
+       $ node index.js 1 7 -t “Foo” “Bar” 
+       =&gt; “1, 2, Foo!, 4, Bar!, 7”
+</code></pre>
+
+<p>Node Package Usage</p>
+
+<p>ES6: 
+      import {createFizzBuzz as fizzBuzz} from './lib/index'
+ES5: 
+      var fizzBuzz = require('./lib/index').createFizzBuzz</p>
+
+<pre><code>fizzBuzz(start, end, [firstMod, secondMod, firstModOutput, secondModOutput])
+  returns array
+
+start: number to start the sequence (inclusive);
+  Integer, Required
+end: Integer, number to end the sequence (inclusive);
+  Integer, Required
+firstMod: First modulus number
+  Integer
+  Default 3
+secondMod: Second modulus number
+  Integer
+  Default 5
+firstModOutput: First replacement string.
+  String
+  Default "Fizz"
+secondModOutput: Second replacement string.
+  String
+  Default "Buzz"
+</code></pre>
+
+<h3>
+<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>CHANGELOG:</h3>
+
+<h4>
+<a id="12-march-2016" class="anchor" href="#12-march-2016" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>12 MARCH 2016:</h4>
+
+<ul>
+<li><p>Fizzbuzz now works with numbers &lt; -(2^53 - 1) and &gt; (2^53 - 1), as per instructions;</p></li>
+<li><p>Fixed bug where calling FizzBuzz with the -h or -v flag will show a warning message. </p></li>
+<li><p>Discovered and fixed a bug where it was incorrectly shunting to process all integers as big integers, this was inefficient but did not affect functionality. </p></li>
+<li><p>Fixing that bug caused me to discover a bug the tests did not pick up where a variable was misnamed. Fixed. </p></li>
+</ul>
+
+<p>Still to do:</p>
+
+<ul>
+<li>Add responsive features so that user can quit from the command line. </li>
+</ul>
+
+<h4>
+<a id="6-march-2016" class="anchor" href="#6-march-2016" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>6 MARCH 2016:</h4>
+
+<hr>
+
+<p>These are completed features: </p>
+
+<ul>
+<li><p>FizzBuzz works with any number from -999,999,999,999,999 to 999,999,999,999,999. </p></li>
+<li><p>From the command line, FizzBuzz can read two numbers stored in a file and use them as inputs. </p></li>
+<li><p>From the command line FizzBuzz can output to a file.</p></li>
+<li><p>From the command line, if no output file is specified, it defaults to
+logging to the console. </p></li>
+<li><p>FizzBuzz outputs help instructions with the -h flag. </p></li>
+<li><p>FizzBuzz outputs version numbers with the -v flag. </p></li>
+<li><p>FizzBuzz can accept alternate moduli (other than 3 and 5).</p></li>
+<li><p>FizzBuzz can accept alternate strings (other than "Fizz", and "Buzz").</p></li>
+<li><p>FizzBuzz can be imported to another project as a library. </p></li>
+</ul>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/brianboyko/fancyFizzbuzz/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/brianboyko/fancyFizzbuzz/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/brianboyko/fancyFizzbuzz"></a> is maintained by <a href="https://github.com/brianboyko">brianboyko</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
